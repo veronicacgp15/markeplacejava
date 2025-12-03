@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: marketplace
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/marketplace?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&allowMultiQueries=true
+    username: root
+    password: ""
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create   # Hibernate crea las tablas y ejecuta import.sql
+    show-sql: true
+    properties:
+      hibernate.format_sql: true

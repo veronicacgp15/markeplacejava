@@ -1,0 +1,10 @@
+# Configuraciones para la integración con el proveedor externo de productos
+provider:
+  product-api:
+    base-url: "https://fakestoreapi.com"
+    # Timeout en milisegundos para las peticiones
+    timeout-ms: 5000
+    # Número de reintentos en caso de fallo
+    retry-attempts: 3
+    # Modo de integración: 'LIVE' (solo mostrar) o 'SYNC' (almacenar y actualizar)
+    integration-mode: "SYNC"

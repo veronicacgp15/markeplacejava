@@ -1,0 +1,48 @@
+package com.vgarcia.marketplace.infraestructure.utils;
+
+public class Constans {
+    public static final String CLIENT_NO_FOUND = "\"Cliente no encontrado con ID: ";
+    public static final String EMAIL_EXISTS = "El email ya esta en uso:";
+    public static final String FILA_ERROR = "Fila {}: Formato de fecha inválido. Se esperaba 'yyyy-MM-dd'. Valor: '{}'";
+    public static final String FILA_IGNORADA = "Fila {} ignorada por estar incompleta o vacía.";
+    public static final String ERROR_ARCHIVO_CSV = "Error crítico al leer el archivo CSV";
+    public static final String ARCHIVO_VACÍO = "El archivo está vacío.";
+    public static final String ERROR_INESPERADO_SERVIDOR = "Ocurrió un error inesperado en el servidor: ";
+    public static final String LISTADO_DE_CLIENTES = "Listado de Clientes";
+    public static final String ERROR_PROCESAR_ARCHIVO_CSV = "Error fatal al procesar el archivo CSV: ";
+    public static final String ERROR_GENERAR_EXCEL = "Error al generar el Excel: ";
+    public static final String CATEGORY_NO_FOUND = "Categoría no encontrada con ID: ";
+    public static final String PRODUCTO_NO_ENCONTRADO = "El producto con ID %d no fue encontrado.";
+    public static final String LISTADO_DE_PRODUCTOS = "Listado de Productos";
+    public static final String ERROR_EN_UNA_FILA_EL_SKU_ES_OBLIGATORIO = "Error en una fila: El SKU es obligatorio.";
+    public static final String ERROR_EN_UNA_FILA_EL_SKU = "Error en una fila: El SKU '";
+    public static final String REGISTRADO_O_DUPLICADO = "' ya está registrado o duplicado en el archivo.";
+    public static final String ERROR_CRÍTICO_AL_PROCESAR_EL_ARCHIVO = "Error crítico al procesar el archivo: ";
+    public static final String ERROR_DE_FORMATO_NUMERICO_EN_LA_FILA_CSV = "Error de formato numérico en la fila CSV: ";
+    public static final String ELIMINAR_ORDEN_NO_ENCONTRADA_ID = "No se puede eliminar. Orden no encontrada con ID: ";
+    public static final String NO_SE_PUEDE_ACTUALIZAR_ORDEN_NO_ENCONTRADA_CON_ID = "No se puede actualizar. Orden no encontrada con ID: ";
+    public static final String ERROR_GRUPO = "Error en el grupo '";
+    public static final String FALLO_AL_PROCESAR_EL_ARCHIVO_CSV = "Fallo al procesar el archivo CSV: ";
+    public static final String EL_CLIENT_ID_NO_NULO_EN_EL_GRUPO = "El 'clientId' no puede ser nulo en el grupo '";
+    public static final String PRODUCT_ID_NO_PUEDE_SER_NULO = "El 'productId' no puede ser nulo. Revisa la fila del grupo '";
+    public static final String LA_QUANTITY_DEBE_SER_NÚMERO_POSITIVO = "La 'quantity' debe ser un número positivo. Revisa la fila del grupo '";
+    public static final String EL_PRODUCTO_CON_ID = "El producto con ID ";
+    public static final String NO_TIENE_UN_INVENTARIO_ASOCIADO = " no tiene un inventario asociado.";
+    public static final String LA_CANTIDAD_A_DESCONTAR_DEBE_SER_POSITIVA = "La cantidad a descontar debe ser positiva.";
+    public static final String STOCK_INSUFICIENTE_PARA_EL_PRODUCTO = "Stock insuficiente para el producto ";
+    public static final String INCONSISTENCIA_CONFIRMAR_UNA_VENTA_POR = "Inconsistencia: Se intenta confirmar una venta por ";
+    public static final String ADVERTENCIA_SE_INTENTÓ_LIBERAR_MÁS_STOCK = "ADVERTENCIA: Se intentó liberar más stock (";
+    public static final String LA_CANTIDAD_A_AÑADIR_DEBE_SER_POSITIVA = "La cantidad a añadir debe ser positiva.";
+    public static final String STOCK_INSUFICIENTE_PARA_EL_PRODUCTO1 = "Stock insuficiente para el producto '";
+    public static final String EL_STOCK_INICIAL_NO_PUEDE_SER_NEGATIVO = "El stock inicial no puede ser negativo.";
+    public static final String NO_ITEMS_ORDEN_NO_ESTADO_PENDIENTE = "No se pueden añadir items a una orden que no está en estado PENDIENTE.";
+    public static final String DATOS_DEL_ITEM_INVÁLIDOS = "Datos del item inválidos.";
+    public static final String CATEGORÍA_PADRE_NO_EXISTE = "La nueva categoría padre no existe.";
+    public static final String UNA_CATEGORÍA_NO_PUEDE_SER_SU_PROPIO_PADRE = "Una categoría no puede ser su propio padre.";
+    public static final String CATEGORÍA_PADRE_ESPECIFICADA_NO_EXISTE = "La categoría padre especificada no existe.";
+    public static final String EXISTE_UN_PRODUCTO_CON_EL_SKU = "Ya existe un producto con el SKU: ";
+    public static final String INCONSISTENCIA_SE_INTENTA_CONFIRMAR_UNA_VENTA_POR = "Inconsistencia: se intenta confirmar una venta por ";
+    public static final String CANTIDAD_A_AÑADIR_DEBE_SER_POSITIVA = "La cantidad a añadir debe ser positiva.";
+    public static final String STOCK_INSUFICIENTE_DISPONIBLE = "Stock insuficiente. Disponible: ";
+    public static final String NO_SE_PUDO_PROCESAR_EL_ARCHIVO_CSV_CAUSA = "No se pudo procesar el archivo CSV. Causa: ";
+}

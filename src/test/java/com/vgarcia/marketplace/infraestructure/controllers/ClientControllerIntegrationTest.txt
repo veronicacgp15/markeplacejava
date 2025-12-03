@@ -1,0 +1,137 @@
+package com.vgarcia.marketplace.infraestructure.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vgarcia.marketplace.application.dto.ClientDTO;
+import com.vgarcia.marketplace.infraestructure.entitys.Client;
+import com.vgarcia.marketplace.infraestructure.repositorys.ClientRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+public class ClientControllerIntegrationTest {
+
+    private static final String API_BASE_URL = "/api/marketplace/clients";
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private Client clientEntity1;
+    private Client clientEntity2;
+
+
+
+    @BeforeEach
+    void setUp() {
+        clientEntity1 = Client.builder()
+                .id(1L)
+                .name("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .birthDate(LocalDate.of(1990, 5, 15))
+                .phoneNumber("123456789")
+                .registrationDate(LocalDateTime.now())
+                .lastActivityDate(LocalDateTime.now())
+                .build();
+
+        clientEntity2 = Client.builder()
+                .id(2L)
+                .name("Jane")
+                .lastName("Smith")
+                .email("jane.smith@example.com")
+                .birthDate(LocalDate.of(1985, 8, 20))
+                .phoneNumber("987654321")
+                .registrationDate(LocalDateTime.now())
+                .lastActivityDate(LocalDateTime.now())
+                .build();
+    }
+
+    @Test
+    @DisplayName("GET /clients - Debe devolver clientes procesados por el servicio real")
+    void shouldClientsFromService() throws Exception {
+        //When
+        given(clientRepository.findAll()).willReturn(List.of(clientEntity1, clientEntity2));
+
+        //Then
+        mockMvc.perform(get(API_BASE_URL))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("John")))
+                .andExpect(jsonPath("$[1].name", is("Jane")));
+    }
+    @Test
+    @DisplayName("GET /clients/{id} - Debe devolver un cliente si el ID es encontrado por el repositorio mock")
+    void shouldReturnClient() throws Exception {
+        // Given
+        given(clientRepository.findById(1L)).willReturn(Optional.of(clientEntity1));
+
+        // THEN
+        mockMvc.perform(get(API_BASE_URL + "/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.email", is(clientEntity1.getEmail())));
+    }
+
+    @Test
+    @DisplayName("POST /clients - Debe crear un cliente usando el servicio real")
+    void shouldCreateClient() throws Exception {
+        // GIVEN
+        ClientDTO clientToCreateDTO = ClientDTOFactory.aClientDTOForCreation();
+
+        given(clientRepository.save(any(Client.class))).willAnswer(invocation -> {
+            Client c = invocation.getArgument(0);
+            c.setId(99L);
+            return c;
+        });
+
+        //WHEN & THEN
+        mockMvc.perform(post(API_BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clientToCreateDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(99L))
+                .andExpect(jsonPath("$.email", is("new.client@example.com")));
+    }
+
+    @Test
+    @DisplayName("DELETE /clients/{id} - Debe llamar al delete del servicio real")
+    void shouldDeleteClient() throws Exception {
+        // GIVEN
+        Long clientId = 1L;
+        given(clientRepository.findById(clientId)).willReturn(Optional.of(clientEntity1));
+        doNothing().when(clientRepository).deleteById(clientId);
+
+        // WHEN & THEN
+        mockMvc.perform(delete(API_BASE_URL + "/{id}", clientId))
+                .andExpect(status().isNoContent());
+    }
+}
