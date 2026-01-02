@@ -1,6 +1,6 @@
-package com.vgarcia.marketplace.infraestructure.entitys;
+package com.vgarcia.marketplace.infrastructure.entities;
 
-import com.vgarcia.marketplace.infraestructure.enums.CurrencyCode;
+import com.vgarcia.marketplace.infrastructure.enums.CurrencyCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

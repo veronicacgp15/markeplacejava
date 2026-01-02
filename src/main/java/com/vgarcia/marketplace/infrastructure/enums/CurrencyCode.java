@@ -1,4 +1,4 @@
-package com.vgarcia.marketplace.infraestructure.enums;
+package com.vgarcia.marketplace.infrastructure.enums;
 
 public enum CurrencyCode {
 

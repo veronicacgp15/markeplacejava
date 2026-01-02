@@ -1,4 +1,4 @@
-package com.vgarcia.marketplace.infraestructure.entitys;
+package com.vgarcia.marketplace.infrastructure.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

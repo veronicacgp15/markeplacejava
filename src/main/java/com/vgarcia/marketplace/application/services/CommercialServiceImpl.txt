@@ -1,0 +1,152 @@
+package com.vgarcia.marketplace.application.services;
+
+import com.vgarcia.marketplace.application.dto.CommercialDTO;
+import com.vgarcia.marketplace.application.dto.ImportResultDTO;
+import com.vgarcia.marketplace.application.dto.csv.CommercialCsvDTO;
+import com.vgarcia.marketplace.application.helpers.GenericExportHelper;
+import com.vgarcia.marketplace.application.helpers.GenericImportHelper;
+import com.vgarcia.marketplace.application.usecase.CommercialService;
+import com.vgarcia.marketplace.domain.exception.CommercialNotFoundException;
+import com.vgarcia.marketplace.domain.models.CommercialDomain;
+import com.vgarcia.marketplace.domain.ports.CommercialPersistencePort;
+import com.vgarcia.marketplace.infrastructure.mappers.CommercialMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.function.Function;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.ERROR_CRÍTICO_AL_PROCESAR_EL_ARCHIVO;
+
+@Service
+@RequiredArgsConstructor
+public class CommercialServiceImpl implements CommercialService {
+
+    private final CommercialPersistencePort commercialPersistencePort;
+    private final CommercialMapper commercialMapper;
+    private final GenericImportHelper genericImportHelper;
+    private final GenericExportHelper exportHelper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public CommercialDTO findById(Long id){
+        return commercialPersistencePort.findById(id)
+                .map(commercialMapper::toDto)
+                .orElseThrow(() -> new CommercialNotFoundException(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommercialDTO> findAll() {
+        return commercialPersistencePort.findAll().stream()
+                .map(commercialMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public CommercialDTO create(CommercialDTO commercialToCreate){
+        CommercialDomain domainToCreate = commercialMapper.toDomain(commercialToCreate);
+        CommercialDomain savedDomain = commercialPersistencePort.save(domainToCreate);
+        return commercialMapper.toDto(savedDomain);
+    }
+
+    @Override
+    @Transactional
+    public CommercialDTO edit(Long id, CommercialDTO commercialToUpdate){
+        CommercialDomain domainToUpdate = commercialMapper.toDomain(commercialToUpdate);
+        CommercialDomain updatedDomain = commercialPersistencePort.update(id, domainToUpdate);
+        return commercialMapper.toDto(updatedDomain);
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteById(Long id){
+        if(!commercialPersistencePort.findById(id).isPresent()){
+            throw new CommercialNotFoundException(id);
+        }
+        commercialPersistencePort.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public ImportResultDTO importFromCsv(InputStream inputStream) {
+        List<CommercialCsvDTO> commercialCsvDtos;
+        try {
+            commercialCsvDtos = genericImportHelper.parse(inputStream, (row, rowNum)
+                    -> CommercialCsvDTO.fromCsvRow(row));
+        } catch (Exception e) {
+            return new ImportResultDTO(0, 0, 1,
+                    List.of(ERROR_CRÍTICO_AL_PROCESAR_EL_ARCHIVO + e.getMessage()));
+        }
+
+        if (commercialCsvDtos.isEmpty()) {
+            return new ImportResultDTO(0, 0, 0, List.of());
+        }
+
+
+        List<CommercialDomain> commercialsToSave = new ArrayList<>();
+        for (CommercialCsvDTO dto : commercialCsvDtos) {
+            CommercialDomain domainToSave = commercialMapper.fromCsvDtoToDomain(dto);
+            commercialsToSave.add(domainToSave);
+        }
+
+        if (!commercialsToSave.isEmpty()) {
+            commercialPersistencePort.saveAll(commercialsToSave);
+        }
+
+        return new ImportResultDTO(commercialCsvDtos.size(), commercialsToSave.size(), 0, List.of());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ByteArrayInputStream exportCommercialsToPdf() {
+        List<CommercialDTO> commercials = this.findAll();
+        List<String> headers = List.of("ID", "Precio Base", "Precio Promo", "En Promoción?", "Impuesto", "Moneda");
+
+        List<Function<CommercialDTO, String>> mappers = List.of(
+                commercial -> Objects.toString(commercial.id(), ""),
+                commercial -> commercial.basePrice() != null ? commercial.basePrice().toPlainString() : "N/A",
+                commercial -> commercial.promotionalPrice() != null ? commercial.promotionalPrice().toPlainString() : "N/A",
+                commercial -> commercial.isPromotional() ? "Sí" : "No",
+                commercial -> commercial.taxRate() != null ? commercial.taxRate().toPlainString() : "N/A",
+                commercial -> commercial.currency() != null ? commercial.currency().name() : "N/A"
+        );
+
+        return exportHelper.exportToPdf("Listado de Datos Comerciales", headers, commercials, mappers);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ByteArrayInputStream exportCommercialsToExcel() {
+        List<CommercialDTO> commercials = this.findAll();
+        List<String> headers = List.of("ID", "Precio Base", "Precio Promo", "En Promoción?", "Descuento %", "Inicio Promo", "Fin Promo", "Impuesto", "Moneda");
+
+        List<Function<CommercialDTO, String>> mappers = List.of(
+                commercial -> Objects.toString(commercial.id(), ""),
+                commercial -> commercial.basePrice() != null ? commercial.basePrice().toPlainString() : "N/A",
+                commercial -> commercial.promotionalPrice() != null ? commercial.promotionalPrice().toPlainString() : "N/A",
+                commercial -> commercial.isPromotional() ? "Sí" : "No",
+                commercial -> commercial.discountPercentage() != null ? commercial.discountPercentage().toPlainString() : "N/A",
+                commercial -> Objects.toString(commercial.promoStartDate(), ""),
+                commercial -> Objects.toString(commercial.promoEndDate(), ""),
+                commercial -> commercial.taxRate() != null ? commercial.taxRate().toPlainString() : "N/A",
+                commercial -> commercial.currency() != null ? commercial.currency().name() : "N/A"
+        );
+
+        return exportHelper.exportToExcel("Datos Comerciales", headers, commercials, mappers);
+    }
+
+
+
+
+
+
+
+}
