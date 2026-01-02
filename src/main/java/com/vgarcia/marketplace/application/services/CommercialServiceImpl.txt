@@ -9,7 +9,7 @@ import com.vgarcia.marketplace.application.usecase.CommercialService;
 import com.vgarcia.marketplace.domain.exception.CommercialNotFoundException;
 import com.vgarcia.marketplace.domain.models.CommercialDomain;
 import com.vgarcia.marketplace.domain.ports.CommercialPersistencePort;
-import com.vgarcia.marketplace.infraestructure.mappers.CommercialMapper;
+import com.vgarcia.marketplace.infrastructure.mappers.CommercialMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.ERROR_CRÍTICO_AL_PROCESAR_EL_ARCHIVO;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.ERROR_CRÍTICO_AL_PROCESAR_EL_ARCHIVO;
 
 @Service
 @RequiredArgsConstructor

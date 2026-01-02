@@ -14,8 +14,18 @@
 	<name>marketplace</name>
 	<description>Prueba Tecnica</description>
 
+<!--	<properties>-->
+<!--		<java.version>21</java.version>-->
+<!--		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>-->
+<!--		<lombok.version>1.18.34</lombok.version>-->
+<!--		<testcontainers.version>1.19.8</testcontainers.version>-->
+<!--		<itext.version>8.0.4</itext.version>-->
+<!--	</properties>-->
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
+
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<lombok.version>1.18.34</lombok.version>
 		<testcontainers.version>1.19.8</testcontainers.version>

@@ -14,8 +14,7 @@ import com.vgarcia.marketplace.domain.models.InventoryDomain;
 import com.vgarcia.marketplace.domain.models.ProductDomain;
 import com.vgarcia.marketplace.domain.ports.CategoryPersistencePort;
 import com.vgarcia.marketplace.domain.ports.ProductPersistencePort;
-import com.vgarcia.marketplace.infraestructure.mappers.ProductMapper;
-import com.vgarcia.marketplace.infraestructure.utils.Constans;
+import com.vgarcia.marketplace.infrastructure.mappers.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,8 +30,8 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.EXISTE_UN_PRODUCTO_CON_EL_SKU;
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.NO_SE_PUDO_PROCESAR_EL_ARCHIVO_CSV_CAUSA;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.EXISTE_UN_PRODUCTO_CON_EL_SKU;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.NO_SE_PUDO_PROCESAR_EL_ARCHIVO_CSV_CAUSA;
 
 @Service
 @Slf4j
@@ -109,7 +108,8 @@ public class ProductServiceImpl implements ProductService {
                 categoryToUse,
                 existingDomain.commercial(),
                 existingDomain.inventory(),
-                existingDomain.metadata()
+                existingDomain.metadata(),
+                existingDomain.similarityVector()
         );
 
         ProductDomain updatedDomain = productPersistencePort.save(domainToUpdate);

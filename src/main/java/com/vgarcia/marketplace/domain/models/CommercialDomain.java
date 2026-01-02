@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.domain.models;
 
-import com.vgarcia.marketplace.infraestructure.enums.CurrencyCode;
+import com.vgarcia.marketplace.infrastructure.enums.CurrencyCode;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

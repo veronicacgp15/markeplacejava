@@ -1,10 +1,10 @@
 package com.vgarcia.marketplace.domain.models;
 
-import com.vgarcia.marketplace.infraestructure.enums.ProductStatus;
+import com.vgarcia.marketplace.infrastructure.enums.ProductStatus;
 
 import java.time.LocalDateTime;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.*;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
 
 public record InventoryDomain(

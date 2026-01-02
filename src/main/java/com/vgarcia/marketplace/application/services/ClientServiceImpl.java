@@ -10,9 +10,9 @@ import com.vgarcia.marketplace.application.usecase.OrderService;
 import com.vgarcia.marketplace.domain.exception.ClientNotFoundException;
 import com.vgarcia.marketplace.domain.models.ClientDomain;
 import com.vgarcia.marketplace.domain.ports.ClientPersistencePort;
-import com.vgarcia.marketplace.infraestructure.entitys.Client;
-import com.vgarcia.marketplace.infraestructure.mappers.ClientMapper;
-import com.vgarcia.marketplace.infraestructure.mappers.OrderMapper;
+import com.vgarcia.marketplace.infrastructure.entities.Client;
+import com.vgarcia.marketplace.infrastructure.mappers.ClientMapper;
+import com.vgarcia.marketplace.infrastructure.mappers.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.*;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
 @Component
 @Slf4j

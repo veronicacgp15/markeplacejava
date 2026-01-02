@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.application.dto.csv;
 
-import com.vgarcia.marketplace.infraestructure.enums.CurrencyCode;
+import com.vgarcia.marketplace.infrastructure.enums.CurrencyCode;
 
 import java.math.BigDecimal;
 import java.util.Optional;

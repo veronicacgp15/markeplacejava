@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.ERROR_GENERAR_EXCEL;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.ERROR_GENERAR_EXCEL;
 
 @Component
 public class GenericExportHelper {

@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.*;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
 @Component
 public class CsvImportHelper {

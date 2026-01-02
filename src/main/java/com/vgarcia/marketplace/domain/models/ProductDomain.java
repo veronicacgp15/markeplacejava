@@ -9,7 +9,8 @@ public record ProductDomain(
         CategoryDomain category,
         CommercialDomain commercial,
         InventoryDomain inventory,
-        MetaDataDomain metadata
+        MetaDataDomain metadata,
+        String similarityVector
 ) {
 
     public ProductDomain(String sku, String name, String description, CategoryDomain category, CommercialDomain commercial, InventoryDomain inventory, MetaDataDomain metadata) {
@@ -20,6 +21,7 @@ public record ProductDomain(
                 category,
                 commercial,
                 inventory,
-                metadata);
+                metadata,
+                null);
     }
 }

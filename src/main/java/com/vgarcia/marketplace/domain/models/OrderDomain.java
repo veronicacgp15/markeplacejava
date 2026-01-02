@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.domain.models;
 
-import com.vgarcia.marketplace.infraestructure.enums.OrderStatus;
+import com.vgarcia.marketplace.infrastructure.enums.OrderStatus;
 
 
 import java.math.BigDecimal;

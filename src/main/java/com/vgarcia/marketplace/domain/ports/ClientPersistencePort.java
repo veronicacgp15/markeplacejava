@@ -1,7 +1,7 @@
 package com.vgarcia.marketplace.domain.ports;
 
 import com.vgarcia.marketplace.domain.models.ClientDomain;
-import com.vgarcia.marketplace.infraestructure.entitys.Client;
+import com.vgarcia.marketplace.infrastructure.entities.Client;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,9 +21,11 @@ public interface ClientPersistencePort {
     void deleteById(Long id);
 
     List<ClientDomain> findByLastActivityAfter(LocalDateTime date);
-    //nuevo
+
     Set<String> findAllEmails();
+
     List<ClientDomain> saveAll(List<ClientDomain> clientsToSave);
+
     boolean existsById(Long id);
 
     void updateLastActivityDate(Long clientId);

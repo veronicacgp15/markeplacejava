@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.ERROR_PROCESAR_ARCHIVO_CSV;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.ERROR_PROCESAR_ARCHIVO_CSV;
 
 @Component
 public class GenericImportHelper {

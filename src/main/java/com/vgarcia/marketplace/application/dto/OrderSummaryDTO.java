@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.application.dto;
 
-import com.vgarcia.marketplace.infraestructure.enums.OrderStatus;
+import com.vgarcia.marketplace.infrastructure.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

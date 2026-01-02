@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.application.dto.csv;
 
-import com.vgarcia.marketplace.infraestructure.enums.OrderStatus;
+import com.vgarcia.marketplace.infrastructure.enums.OrderStatus;
 
 public record OrderCsvDTO (
         Long clientId,

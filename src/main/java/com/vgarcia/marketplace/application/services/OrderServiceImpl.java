@@ -17,8 +17,8 @@ import com.vgarcia.marketplace.domain.models.*;
 import com.vgarcia.marketplace.domain.ports.ClientPersistencePort;
 import com.vgarcia.marketplace.domain.ports.OrderPersistencePort;
 import com.vgarcia.marketplace.domain.ports.ProductPersistencePort;
-import com.vgarcia.marketplace.infraestructure.enums.OrderStatus;
-import com.vgarcia.marketplace.infraestructure.mappers.OrderMapper;
+import com.vgarcia.marketplace.infrastructure.enums.OrderStatus;
+import com.vgarcia.marketplace.infrastructure.mappers.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vgarcia.marketplace.infraestructure.utils.Constans.*;
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
 @Service
 @RequiredArgsConstructor

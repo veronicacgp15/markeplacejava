@@ -1,6 +1,6 @@
 package com.vgarcia.marketplace.application.dto;
 
-import com.vgarcia.marketplace.infraestructure.enums.ProductStatus;
+import com.vgarcia.marketplace.infrastructure.enums.ProductStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
