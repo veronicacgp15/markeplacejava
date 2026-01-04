@@ -1,0 +1,705 @@
+{
+	"info": {
+		"_postman_id": "c02de6d5-163b-4942-b744-38aa2b85173a",
+		"name": "MarketPlace",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45047695",
+		"_collection_link": "https://veronica-7588511.postman.co/workspace/Veronica's-Workspace~281c3b2d-6c6b-4001-882f-f9064d075109/collection/45047695-c02de6d5-163b-4942-b744-38aa2b85173a?action=share&source=collection_link&creator=45047695"
+	},
+	"item": [
+		{
+			"name": "clients/list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clients/create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "     {\r\n        \"email\": \"prueba.create@example.com\",\r\n        \"name\": \"Cretae\",\r\n        \"lastName\": \"Create\",\r\n        \"phone\": null,\r\n        \"address\": \"Create, Valencia\",\r\n        \"birthDate\": \"1995-01-28\",\r\n        \"registrationDate\": \"2025-12-04T18:13:55\",\r\n        \"lastActivityDate\": \"2025-12-04T18:13:55\",\r\n        \"lastRenewalDate\": \"2024-01-10\",\r\n        \"yearsOfAntiquity\": 0\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clients/edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 4,\r\n        \"email\": \"prueba.edit@example.com\",\r\n        \"name\": \"Edit\",\r\n        \"lastName\": \"Edit\",\r\n        \"phoneNumber\": null,\r\n        \"address\": \"Edit, Valencia\",\r\n        \"birthDate\": \"1995-01-28\",\r\n        \"registrationDate\": \"2025-12-16T21:55:58\",\r\n        \"lastActivityDate\": \"2025-12-16T21:55:58\",\r\n        \"lastRenewalDate\": \"2024-01-10\",\r\n        \"yearsOfAntiquity\": 0,\r\n        \"daysSinceLegacyRegistration\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/clients/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"clients",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clients/delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/clients/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"clients",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clients/import-csv",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0d21dd-eeca-42a0-b0de-71736760472f"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/clients/import-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"clients",
+						"import-csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clients/export",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//************* copia en el navegador el siguiente enlace y descarga al equipo del usuario archivo EXCEL\r\n\r\nhttp://localhost:8080/api/marketplace/clients/export/excel\r\n\r\n//************* copia en el navegador el siguiente enlace  y descarga al equipo del usuario el archivo en PDF \r\n \r\n http://localhost:8080/api/marketplace/clients/export/pdf\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Deportes\",\r\n  \"description\": \"Artículos y equipamiento para actividades deportivas.\",\r\n  \"subCategories\": [\r\n    {\r\n      \"name\": \"Fitness\",\r\n      \"description\": \"Equipos y accesorios para entrenamiento físico.\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n        \"id\": 7,\r\n        \"name\": \"Deportes Edit\",\r\n        \"description\": \"Artículos y equipamiento para actividades deportivas.\",\r\n        \"parentCategoryId\": null,\r\n        \"subCategoryIds\": [],\r\n        \"productCount\": 0,\r\n        \"isRootCategory\": true,\r\n        \"metadata\": null\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/categories/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"categories",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/categories/18",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"categories",
+						"18"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/import-csv",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0dac61-c396-4a70-83bd-3f8cdc7848ce"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/categories/import-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"categories",
+						"import-csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categories/export",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//************* copia en el navegador el siguiente enlace y descarga al equipo del usuario archivo EXCEL\r\n\r\nhttp://localhost:8080/api/marketplace/categories/export/excel\r\n\r\n//************* copia en el navegador el siguiente enlace  y descarga al equipo del usuario el archivo en PDF \r\n \r\n http://localhost:8080/api/marketplace/categories/export/pdf",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sku\": \"TAB-SAMSUNG-S9\",\r\n  \"name\": \"Samsung Galaxy Tab S9\",\r\n  \"description\": \"Tablet de alto rendimiento con pantalla AMOLED.\",\r\n  \"categoryId\": 3,\r\n  \"commercialRequest\": {\r\n    \"basePrice\": 899.99,\r\n    \"taxRate\": 21.00\r\n  },\r\n  \"inventoryRequest\": {\r\n    \"initialStock\": 50,\r\n    \"warehouseLocation\": \"ALM-Z1-SEC9\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n       \"sku\": \"SKU-LAP-002\",\r\n    \"name\": \"Laptop Pro UltraBook 14\",\r\n    \"description\": \"Una laptop ultraligera y potente para profesionales, con 16GB de RAM y 512GB SSD.\",\r\n    \"price\": 1299.99,\r\n    \"categoryId\": 1,\r\n    \"commercialId\": 1,\r\n    \"inventoryId\": 1,\r\n    \"stockQuantity\": 150,\r\n    \"status\": \"AC\",\r\n    \"similarityVectorJson\": null,\r\n    \"createdDate\": \"2025-12-12T14:43:02.1832503\",\r\n    \"lastModifiedDate\": \"2025-12-12T14:43:02.1832503\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n       \"sku\": \"AUD-BT-900\",\r\n        \"name\": \"Audífonos Noise Cancelling Pro Edit\",\r\n        \"description\": \"Auriculares inalámbricos con 40 horas de batería y cancelación de ruido\",\r\n        \"price\": 79.99,\r\n        \"categoryId\": 11,\r\n        \"stockQuantity\": null,\r\n        \"status\": null,\r\n        \"similarityVectorJson\": \"{\\\"v\\\": [0.7, 0.9, 0.1, 0.4]}\",\r\n        \"createdDate\": \"2025-12-11T23:30:13\",\r\n        \"lastModifiedDate\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/import-csv",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0d7642-597c-4450-a3c4-058d24ceedc6"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products/import-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products",
+						"import-csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products/export",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//************* copia en el navegador el siguiente enlace y descarga al equipo del usuario archivo EXCEL\r\n\r\nhttp://localhost:8080/api/marketplace/products/export/excel\r\n\r\n//************* copia en el navegador el siguiente enlace  y descarga al equipo del usuario el archivo en PDF \r\n \r\nhttp://localhost:8080/api/marketplace/products/export/pdf",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/products/export",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"products",
+						"export"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/liist",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//************* copia en el navegador el siguiente enlace y descarga al equipo del usuario archivo EXCEL\r\n\r\nhttp://localhost:8080/api/marketplace/products/export/excel\r\n\r\n//************* copia en el navegador el siguiente enlace  y descarga al equipo del usuario el archivo en PDF \r\n \r\nhttp://localhost:8080/api/marketplace/products/export/pdf",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clientId\": 1,\r\n  \"items\": [\r\n    {\r\n      \"productId\": 1,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": 2,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 3,\r\n    \"clientId\": 1,\r\n    \"items\": [\r\n        {\r\n            \"id\": 4,\r\n            \"productId\": 1,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 1299.99,\r\n            \"totalPrice\": 1299.99,\r\n            \"createdAt\": \"2025-12-13T17:12:55.3538946\",\r\n            \"updatedAt\": \"2025-12-13T17:12:55.3548972\"\r\n        },\r\n        {\r\n            \"id\": 5,\r\n            \"productId\": 3,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 79.99,\r\n            \"totalPrice\": 159.98,\r\n            \"createdAt\": \"2025-12-13T17:12:55.3588909\",\r\n            \"updatedAt\": \"2025-12-13T17:12:55.3588909\"\r\n        }\r\n    ],\r\n    \"subtotal\": 1459.97,\r\n    \"tax\": 306.5937,\r\n    \"discount\": 145.9970,\r\n    \"total\": 1620.5667,\r\n    \"status\": \"COMPLETED\",\r\n    \"createdAt\": \"2025-12-13T17:12:55.2738843\",\r\n    \"updatedAt\": \"2025-12-13T17:12:55.2738843\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": 1,\r\n    \"items\": [\r\n        {\r\n            \"id\": 4,\r\n            \"productId\": 1,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 1300.99,\r\n            \"totalPrice\": 1300.99,\r\n            \"createdAt\": \"2025-12-12T22:16:44.4733582\",\r\n            \"updatedAt\": \"2025-12-12T22:16:44.4733582\"\r\n        },\r\n        {\r\n            \"id\": 5,\r\n            \"productId\": 3,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 79.99,\r\n            \"totalPrice\": 159.98,\r\n            \"createdAt\": \"2025-12-12T22:16:44.4893582\",\r\n            \"updatedAt\": \"2025-12-12T22:16:44.4893582\"\r\n        }\r\n    ],\r\n    \"subtotal\": 1500.97,\r\n    \"tax\": 116.5937,\r\n    \"total\": 1766.5637,\r\n    \"status\": \"PENDING\",\r\n    \"createdAt\": \"2025-12-12T22:16:44.32136\",\r\n    \"updatedAt\": \"2025-12-12T22:16:44.32136\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/import-csv",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file\n",
+							"type": "file",
+							"src": "postman-cloud:///1f0d8465-24b9-4200-824a-06dfcaeb675a"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders/import-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders",
+						"import-csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders/export",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//************* copia en el navegador el siguiente enlace y descarga al equipo del usuario archivo EXCEL\r\n\r\nhttp://localhost:8080/api/marketplace/orders/export/excel\r\n\r\n//************* copia en el navegador el siguiente enlace  y descarga al equipo del usuario el archivo en PDF \r\n \r\nhttp://localhost:8080/api/marketplace/orders/export/pdf",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/marketplace/orders/import-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"marketplace",
+						"orders",
+						"import-csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "productExternal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/sync/external-products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"sync",
+						"external-products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
