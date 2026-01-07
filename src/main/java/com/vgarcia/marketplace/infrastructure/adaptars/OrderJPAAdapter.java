@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.NO_SE_ENCONTRÓ_LA_ORDEN_A_ACTUALIZAR_CON_ID;
 
 
 @Component
@@ -25,14 +28,14 @@ public class OrderJPAAdapter implements OrderPersistencePort {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final OrderMapper orderMapper;
+
     @Override
     @Transactional
     public OrderDomain save(OrderDomain orderDomain) {
-        if (orderDomain.id() == null) {
-            return createNewOrder(orderDomain);
-        } else {
-            return updateExistingOrder(orderDomain);
-        }
+        Objects.requireNonNull(orderDomain, "orderDomain must not be null");
+        return Objects.isNull(orderDomain.id())
+                ? createNewOrder(orderDomain)
+                : updateExistingOrder(orderDomain);
     }
 
     private OrderDomain createNewOrder(OrderDomain orderDomain) {
@@ -48,7 +51,7 @@ public class OrderJPAAdapter implements OrderPersistencePort {
 
     private OrderDomain updateExistingOrder(OrderDomain orderDomain) {
         Order orderEntity = orderRepository.findByIdWithItems(orderDomain.id())
-                .orElseThrow(() -> new IllegalStateException("No se encontró la orden a actualizar con ID: " + orderDomain.id()));
+                .orElseThrow(() -> new IllegalStateException(NO_SE_ENCONTRÓ_LA_ORDEN_A_ACTUALIZAR_CON_ID + orderDomain.id()));
 
 
         orderMapper.updateEntityFromDomain(orderDomain, orderEntity);

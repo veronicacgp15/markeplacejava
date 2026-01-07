@@ -101,7 +101,6 @@ public class CategoryController {
                 .body(new InputStreamResource(bis));
     }
 
-    // --- Endpoints con rutas de variables (se colocan después de las rutas específicas) ---
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a category by ID", description = "Retrieves a single category by its unique ID.")

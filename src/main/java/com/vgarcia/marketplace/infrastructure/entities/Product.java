@@ -56,7 +56,7 @@ public class Product {
     @Builder.Default
     private MetaData metadata = new MetaData();
 
-    protected void setCategory(Category category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

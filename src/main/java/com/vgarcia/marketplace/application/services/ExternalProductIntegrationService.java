@@ -2,17 +2,24 @@ package com.vgarcia.marketplace.application.services;
 
 
 import com.vgarcia.marketplace.application.dto.ExternalProductDTO;
+import com.vgarcia.marketplace.application.dto.ProductSyncResponse;
 import com.vgarcia.marketplace.domain.models.ProductDomain;
 import com.vgarcia.marketplace.domain.ports.ExternalApiClientPort;
 import com.vgarcia.marketplace.domain.ports.ProductPersistencePort;
 import com.vgarcia.marketplace.infrastructure.mappers.ProductMapper;
+import com.vgarcia.marketplace.infrastructure.utils.Constans;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.vgarcia.marketplace.infrastructure.utils.Constans.NO_SE_ENCONTRARON_PRODUCTOS_EXTERNOS;
 
 @Service
 @Slf4j
@@ -23,44 +30,71 @@ public class ExternalProductIntegrationService {
     private final ProductPersistencePort productPersistencePort;
     private final ProductMapper productMapper;
 
-
-    public void syncExternalProducts() {
-        log.info("Iniciando sincronización masiva con proveedor externo...");
+    public ProductSyncResponse syncExternalProducts() {
 
         List<Long> externalIds = externalApiClient.fetchAllProductIds();
-        log.info("Se encontraron {} productos externos para procesar.", externalIds.size());
 
         if (externalIds.isEmpty()) {
-            return;
+            return new ProductSyncResponse(0, 0, 0, 0, List.of(), List.of(),
+                    NO_SE_ENCONTRARON_PRODUCTOS_EXTERNOS);
         }
+
+        AtomicInteger createdCounter = new AtomicInteger(0);
+        AtomicInteger updatedCounter = new AtomicInteger(0);
+        AtomicInteger failureCounter = new AtomicInteger(0);
+
+        List<String> logs = Collections.synchronizedList(new ArrayList<>());
+        List<String> errorMessages = Collections.synchronizedList(new ArrayList<>());
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
             List<CompletableFuture<Void>> futures = externalIds.stream()
-                    .map(id -> CompletableFuture.runAsync(() -> processSingleProduct(id), executor))
+                    .map(id -> CompletableFuture.runAsync(() ->
+                            processSingleProduct(id, createdCounter,
+                                    updatedCounter, failureCounter, logs, errorMessages), executor)
+                    )
                     .toList();
 
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         }
 
-        log.info("Sincronización finalizada.");
+        return new ProductSyncResponse(
+                externalIds.size(),
+                createdCounter.get(),
+                updatedCounter.get(),
+                failureCounter.get(),
+                new ArrayList<>(logs),
+                new ArrayList<>(errorMessages),
+                "Proceso de sincronización finalizado."
+        );
     }
 
-
-    private void processSingleProduct(Long id) {
+    private void processSingleProduct(Long id,
+                                      AtomicInteger created,
+                                      AtomicInteger updated,
+                                      AtomicInteger failure,
+                                      List<String> logs,
+                                      List<String> errorMessages) {
         try {
-
             ExternalProductDTO externalDto = externalApiClient.getProductDetail(id);
 
-            log.info("Procesando producto externo: SKU {}", externalDto.sku());
+            boolean exists = productPersistencePort.existsBySku(externalDto.sku());
 
-            // B. Mapeo: Convertimos el objeto externo a nuestro Dominio
-            ProductDomain productDomain = productMapper.toDomain(externalDto);
+            if (exists) {
+                updated.incrementAndGet();
+                logs.add("Producto ID " + id + " (SKU: " + externalDto.sku() + "): Registro ya ejecutado.");
+            } else {
+                ProductDomain productDomain = productMapper.toDomain(externalDto);
 
-            productPersistencePort.save(productDomain);
+                productPersistencePort.save(productDomain);
+
+                created.incrementAndGet();
+                logs.add("Producto ID " + id + " (SKU: " + externalDto.sku() + "): Nuevo registro creado.");
+            }
 
         } catch (Exception e) {
-            log.error("Error al procesar producto externo ID: {}", id, e);
+            failure.incrementAndGet();
+            errorMessages.add("ID " + id + " falló: " + e.getMessage());
         }
     }
 }

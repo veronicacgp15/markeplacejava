@@ -25,4 +25,10 @@ public interface CommercialMapper {
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "metadata", ignore = true)
     Commercial toEntity(CommercialDomain domain);
+
+    // --- Domain -> Entity (Para actualizar existentes) ---
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "metadata", ignore = true)
+    void updateEntityFromDomain(CommercialDomain domain, @MappingTarget Commercial entity);
 }

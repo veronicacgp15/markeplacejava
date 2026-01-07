@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
@@ -76,37 +77,33 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO edit(Long id, CategoryDTO categoryToUpdate) {
         log.info("Iniciando actualización de la categoría con ID: {}", id);
 
-        CategoryDomain existingDomain = categoryPersistencePort.findById(id)
+        return categoryPersistencePort.findById(id)
+                .map(existing -> {
+                    Optional.ofNullable(categoryToUpdate.parentCategoryId())
+                            .filter(newParentId -> !Objects.equals(newParentId,
+                                    existing.parentCategoryId()))
+                            .ifPresent(newParentId -> {
+                                if (newParentId.equals(id)) throw new CategoryCycleException(id,
+                                        newParentId, UNA_CATEGORÍA_NO_PUEDE_SER_SU_PROPIO_PADRE);
+                                validateCycles(id, newParentId);
+                            });
+
+                    return new CategoryDomain(
+                            id,
+                            categoryToUpdate.name(),
+                            categoryToUpdate.description(),
+                            categoryToUpdate.parentCategoryId(),
+                            existing.subCategories(),
+                            existing.productCount(),
+                            existing.metadata()
+                    );
+                })
+                .map(categoryPersistencePort::save)
+                .map(saved -> {
+                    log.info("Categoría con ID: {} actualizada exitosamente", saved.id());
+                    return categoryMapper.toDto(saved);
+                })
                 .orElseThrow(() -> new CategoryNotFoundException(id));
-
-        Long newParentId = categoryToUpdate.parentCategoryId();
-        Long currentParentId = existingDomain.parentCategoryId();
-
-        if (!Objects.equals(newParentId, currentParentId)) {
-            if (newParentId != null) {
-                if (newParentId.equals(id)) {
-                    throw new CategoryCycleException(id, newParentId, UNA_CATEGORÍA_NO_PUEDE_SER_SU_PROPIO_PADRE);
-                }
-
-                validateCycles(id, newParentId);
-            }
-        }
-
-        CategoryDomain domainToUpdate = new CategoryDomain(
-                id,
-                categoryToUpdate.name(),
-                categoryToUpdate.description(),
-                newParentId,
-                existingDomain.subCategories(),
-                existingDomain.productCount(),
-                existingDomain.metadata()
-        );
-
-
-        CategoryDomain savedDomain = categoryPersistencePort.save(domainToUpdate);
-        log.info("Categoría con ID: {} actualizada exitosamente", savedDomain.id());
-
-        return categoryMapper.toDto(savedDomain);
     }
 
      private void validateCycles(Long targetId, Long currentParentId) {
@@ -142,58 +139,49 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public ImportResultDTO importFromCsv(InputStream inputStream) {
         log.info("Iniciando importación de categorías desde CSV");
-        try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+        try (var reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             List<CategoryCsvDTO> csvDtoList = new CsvToBeanBuilder<CategoryCsvDTO>(reader)
                     .withType(CategoryCsvDTO.class)
                     .withIgnoreLeadingWhiteSpace(true)
-                    .build()
-                    .parse();
+                    .build().parse();
 
-            if (csvDtoList.isEmpty()) {
-                return new ImportResultDTO(0, 0, 0, List.of());
-            }
+            if (csvDtoList.isEmpty()) return new ImportResultDTO(0, 0, 0, List.of());
 
-            Set<String> existingNames = categoryPersistencePort.findAllNames();
-            Set<Long> existingIds = categoryPersistencePort.findAllIds();
-            List<String> errors = new ArrayList<>();
-            List<CategoryDomain> categoriesToCreate = new ArrayList<>();
+            final Set<String> names = categoryPersistencePort.findAllNames();
+            final Set<Long> ids = categoryPersistencePort.findAllIds();
 
-            for (int i = 0; i < csvDtoList.size(); i++) {
-                CategoryCsvDTO dto = csvDtoList.get(i);
-                int rowNum = i + 2;
+            var results = IntStream.range(0, csvDtoList.size())
+                    .mapToObj(i -> {
+                        CategoryCsvDTO dto = csvDtoList.get(i);
+                        int row = i + 2;
 
-                if (dto.getName() == null || dto.getName().isBlank()) {
-                    errors.add("Fila " + rowNum + ": El nombre de la categoría es obligatorio.");
-                    continue;
-                }
+                        return validateField(dto.getName() == null || dto.getName().isBlank(), "Fila " + row + ": Nombre obligatorio")
+                                .or(() -> validateField(names.contains(dto.getName()), "Fila " + row + ": La categoría '" + dto.getName() + "' ya existe"))
+                                .or(() -> validateField(dto.getParentCategoryId() != null && !ids.contains(dto.getParentCategoryId()),
+                                        "Fila " + row + ": Padre con ID '" + dto.getParentCategoryId() + "' no existe"))
+                                .map(error -> (Object) error)
+                                .orElseGet(() -> {
+                                    CategoryDomain domain = categoryMapper.fromCsvToDomain(dto);
+                                    names.add(domain.name());
+                                    return domain;
+                                });
+                    })
+                    .collect(Collectors.partitioningBy(res -> res instanceof CategoryDomain));
 
-                if (existingNames.contains(dto.getName())) {
-                    errors.add("Fila " + rowNum + ": La categoría '" + dto.getName() + "' ya existe.");
-                    continue;
-                }
+            List<CategoryDomain> toCreate = results.get(true).stream().map(CategoryDomain.class::cast).toList();
+            List<String> errors = results.get(false).stream().map(String.class::cast).toList();
 
-                if (dto.getParentCategoryId() != null && !existingIds.contains(dto.getParentCategoryId())) {
-                    errors.add("Fila " + rowNum + ": La categoría padre con ID '" + dto.getParentCategoryId() + "' no existe.");
-                    continue;
-                }
+            if (!toCreate.isEmpty()) categoryPersistencePort.saveAll(toCreate);
 
-                CategoryDomain newDomain = categoryMapper.fromCsvToDomain(dto);
-                categoriesToCreate.add(newDomain);
-                existingNames.add(newDomain.name());
-            }
-
-            if (!categoriesToCreate.isEmpty()) {
-                categoryPersistencePort.saveAll(categoriesToCreate);
-            }
-
-            log.info("Importación de categorías completada. Filas procesadas: {}, Creadas: {}, Errores: {}",
-                    csvDtoList.size(), categoriesToCreate.size(), errors.size());
-            return new ImportResultDTO(csvDtoList.size(), categoriesToCreate.size(), errors.size(), errors);
+            return new ImportResultDTO(csvDtoList.size(), toCreate.size(), errors.size(), errors);
 
         } catch (Exception e) {
-            log.error("Fallo crítico durante la importación del CSV de categorías.", e);
-            throw new RuntimeException("No se pudo procesar el archivo CSV. Causa: " + e.getMessage(), e);
+            throw new RuntimeException(ERROR_ARCHIVO_CSV+ e.getMessage(), e);
         }
+    }
+
+    private Optional<String> validateField(boolean isInvalid, String message) {
+        return isInvalid ? Optional.of(message) : Optional.empty();
     }
 
     @Override
@@ -239,7 +227,6 @@ public class CategoryServiceImpl implements CategoryService {
             case IllegalArgumentException iae -> "Datos inválidos: " + iae.getMessage();
             case NullPointerException npe -> "Error crítico: Valor nulo inesperado";
             case IllegalStateException ise -> "Estado inconsistente: " + ise.getMessage();
-            // Pattern matching con guardas (when)
             case RuntimeException re when re.getMessage().contains("CSV") -> "Error de formato CSV";
             default -> "Error desconocido: " + e.getClass().getSimpleName();
         };

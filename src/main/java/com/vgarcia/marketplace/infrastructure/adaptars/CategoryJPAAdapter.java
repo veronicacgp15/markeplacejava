@@ -23,21 +23,20 @@ public class CategoryJPAAdapter implements CategoryPersistencePort {
 
     @Override
     public CategoryDomain save(CategoryDomain categoryDomain) {
-
         Category categoryEntity = categoryMapper.toEntity(categoryDomain);
 
-        if (categoryDomain.parentCategoryId() != null) {
-            Category parentEntity = categoryRepository.findById(categoryDomain.parentCategoryId())
-                    .orElseThrow(() -> new RuntimeException("La categoría padre con ID " + categoryDomain.parentCategoryId() + " no existe."));
+        if (categoryDomain.id() != null) categoryEntity.setId(categoryDomain.id());
 
-            categoryEntity.setParentCategory(parentEntity);
-        } else {
-            categoryEntity.setParentCategory(null);
-        }
+        Category parentEntity = (categoryDomain.parentCategoryId() != null)
+                ? categoryRepository.findById(categoryDomain.parentCategoryId())
+                .orElseThrow(() -> new RuntimeException("Categoría padre no encontrada"))
+                : null;
+
+        categoryEntity.setParentCategory(parentEntity);
 
         Category savedEntity = categoryRepository.save(categoryEntity);
-
         return categoryMapper.toDomain(savedEntity);
+
     }
 
     @Override

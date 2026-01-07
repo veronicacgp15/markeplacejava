@@ -12,22 +12,23 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 @Slf4j
 public class MockExternalApiClientAdapter implements ExternalApiClientPort {
+
     @Override
     public List<Long> fetchAllProductIds() {
-        log.info("[API EXTERNA] Solicitando lista de IDs...");
 
-        return List.of(100L, 101L, 102L, 103L, 104L, 105L, 106L, 107L, 108L, 109L);
+        return List.of(100L, 101L, 102L,
+                103L, 104L, 105L, 106L,
+                107L, 108L, 109L);
     }
 
     @Override
     public ExternalProductDTO getProductDetail(Long id) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        log.info("[API EXTERNA] Descargando detalle del producto ID: {} en el hilo: {}", id, Thread.currentThread());
 
         return new ExternalProductDTO(
                 id,
@@ -36,7 +37,7 @@ public class MockExternalApiClientAdapter implements ExternalApiClientPort {
                 "Descripción importada",
                 BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(10, 500)),
                 ThreadLocalRandom.current().nextInt(1, 100),
-                "General"
+                "Computación"
         );
     }
 }

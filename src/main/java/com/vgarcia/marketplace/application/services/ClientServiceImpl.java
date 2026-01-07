@@ -26,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.vgarcia.marketplace.infrastructure.utils.Constans.*;
 
@@ -106,64 +108,60 @@ public class ClientServiceImpl implements ClientService {
     public ClientStatsDTO getClientStats(Long clientId) {
         ClientDomain clientDomain = clientPersistencePort.findById(clientId)
                 .orElseThrow(() -> new ClientNotFoundException(clientId));
-
-        // Asumiendo que estos métodos existen en tu ClientDomain
-        long yearsOfAntiquity = clientDomain.getYearsOfAntiquity();
-        long daysSinceLegacyRegistration = clientDomain.getDaysSinceLegacyRegistration();
-
-        return new ClientStatsDTO(clientId, yearsOfAntiquity, daysSinceLegacyRegistration);
+        return new ClientStatsDTO(clientId, clientDomain.getYearsOfAntiquity(),
+                clientDomain.getDaysSinceLegacyRegistration());
     }
 
     @Override
     @Transactional
     public ImportResultDTO importFromCsv(InputStream inputStream) {
         log.info("Iniciando importación de clientes desde CSV");
-        try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-            List<ClientCsvDTO> clientCsvDtos = new CsvToBeanBuilder<ClientCsvDTO>(reader)
+
+        try (var reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            List<ClientCsvDTO> csvDtos = new CsvToBeanBuilder<ClientCsvDTO>(reader)
                     .withType(ClientCsvDTO.class)
                     .withIgnoreLeadingWhiteSpace(true)
-                    .build()
-                    .parse();
+                    .build().parse();
 
-            if (clientCsvDtos.isEmpty()) {
-                return new ImportResultDTO(0, 0, 0, List.of());
-            }
+            if (csvDtos.isEmpty()) return new ImportResultDTO(0, 0, 0, List.of());
 
-            Set<String> existingEmails = clientPersistencePort.findAllEmails();
-            List<ClientDomain> clientsToSave = new ArrayList<>();
-            List<String> errors = new ArrayList<>();
+            final Set<String> existingEmails = clientPersistencePort.findAllEmails();
 
-            for (int i = 0; i < clientCsvDtos.size(); i++) {
-                ClientCsvDTO dto = clientCsvDtos.get(i);
-                int rowNum = i + 2;
+            var results = IntStream.range(0, csvDtos.size())
+                    .mapToObj(i -> {
+                        ClientCsvDTO dto = csvDtos.get(i);
+                        int row = i + 2;
 
-                if (dto.getEmail() == null || dto.getEmail().isBlank()) {
-                    errors.add("Fila " + rowNum + ": El email es obligatorio.");
-                    continue;
-                }
-                if (existingEmails.contains(dto.getEmail())) {
-                    errors.add("Fila " + rowNum + ": El email '" + dto.getEmail() + "' ya está registrado.");
-                    continue;
-                }
+                        return validateField(dto.getEmail() == null || dto.getEmail().isBlank(), "Fila " + row + ": El email es obligatorio.")
+                                .or(() -> validateField(existingEmails.contains(dto.getEmail()), "Fila " + row + ": El email '" + dto.getEmail() + "' ya existe."))
+                                .map(error -> (Object) error)
+                                .orElseGet(() -> {
+                                    existingEmails.add(dto.getEmail());
+                                    return clientMapper.fromCsvDtoToDomain(dto);
+                                });
+                    })
+                    .collect(Collectors.partitioningBy(res -> res instanceof ClientDomain));
 
+            List<ClientDomain> toSave = results.get(true)
+                    .stream().map(ClientDomain.class::cast).toList();
+            List<String> errors = results.get(false).stream()
+                    .map(String.class::cast).toList();
 
-                clientsToSave.add(clientMapper.fromCsvDtoToDomain(dto));
-                existingEmails.add(dto.getEmail());
-            }
+            if (!toSave.isEmpty()) clientPersistencePort.saveAll(toSave);
 
-            if (!clientsToSave.isEmpty()) {
-                clientPersistencePort.saveAll(clientsToSave);
-            }
+            log.info("Importación completada. Procesadas: {}, Creadas: {}, Errores: {}",
+                    csvDtos.size(), toSave.size(), errors.size());
 
-            log.info("Importación CSV completada. Filas procesadas: {}, Clientes creados: {}, Errores: {}",
-                    clientCsvDtos.size(), clientsToSave.size(), errors.size());
-
-            return new ImportResultDTO(clientCsvDtos.size(), clientsToSave.size(), errors.size(), errors);
+            return new ImportResultDTO(csvDtos.size(), toSave.size(), errors.size(), errors);
 
         } catch (Exception e) {
-            log.error("Fallo crítico durante la importación del CSV de clientes.", e);
-            throw new RuntimeException("No se pudo procesar el archivo CSV. Causa: " + e.getMessage(), e);
+            log.error("Fallo crítico en importación de clientes", e);
+            throw new RuntimeException("Error al procesar CSV: " + e.getMessage(), e);
         }
+    }
+
+    private Optional<String> validateField(boolean isInvalid, String message) {
+        return isInvalid ? Optional.of(message) : Optional.empty();
     }
 
     @Override

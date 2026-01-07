@@ -30,7 +30,7 @@ public record ProductDTO(
         CommercialDTO commercial,
         InventoryDTO inventory,
 
-        // --- DTOs de Petición (para creación) ---
+        // --- DTOs de Petición ---
         @NotNull(groups = OnCreate.class, message = "La información comercial es obligatoria.")
         @Valid
         CommercialRequestDTO commercialRequest,
